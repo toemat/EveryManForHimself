@@ -27,6 +27,11 @@ var main = function(){
 	the_man.render(ctx);
 
 	then = now;
+	
+	//Draw debug
+	ctx.fillStyle = "black";
+	ctx.font = "12px monospace";
+	ctx.fillText("press F" , 5, 15);
 
 	// Request to do this again ASAP
 	requestAnimationFrame(main);
