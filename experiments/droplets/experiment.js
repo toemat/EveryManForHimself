@@ -6,7 +6,7 @@ var the_lands = new Array();
 
 //Setup stuff
 var start = function(){
-	then = Date.now();
+	last_update = Date.now();
 	
 	the_lands.push(new Land(0, 350, 600, 50));
 	the_lands.push(new Land(300, 250, 200, 30));
