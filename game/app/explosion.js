@@ -50,7 +50,7 @@
 					SIZE
 				);
 			}
-        },
+        }
     };
 
     window.Explosion = Explosion;
