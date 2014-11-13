@@ -1,27 +1,35 @@
 /***** Global Defines *****/
-var WIN_WIDTH = 600;
-var WIN_HEIGHT = 400;
+var WIN_WIDTH = 1280;
+var WIN_HEIGHT = 720;
+var GAME_SPEED = 0.1;
 var RESOURCES;
 
-(function(){
-	var canvas, ctx, lastFrame;
+/* Move inside function after debug */
+var canvas, ctx, lastFrame;
 	
-	var players = [];
+var players = [];
+/* end move */
+
+(function(){
 	
 	//Setup game
 	var start = function(){
 		canvas = document.getElementById('canvas');
 		ctx = canvas.getContext('2d');
 		
+		canvas.width = WIN_WIDTH;
+		canvas.height = WIN_HEIGHT;
+		
 		//Load resources
 		RESOURCES = new GameResources();
 		RESOURCES.loadImages({
-			playerShip: 'img/ship.png'
+			playerShip: 'img/ship.png',
+			explosion: 'img/explosion_sprite.png'
 		});
 		
 		//Create players
 		for(var i=0; i<20; i++){
-			players.push(new Player(getRandomInt(64, WIN_WIDTH-64), getRandomInt(64, WIN_HEIGHT-64)));
+			players.push(new Player(getRandomInt(64, WIN_WIDTH/2), getRandomInt(64, WIN_HEIGHT-64), intToChar(i+65)));
 		}
 
 		lastFrame = Date.now();
@@ -40,7 +48,11 @@ var RESOURCES;
 		
 		for(var i in players){
 			players[i].update(delta);
-			players[i].render(ctx);
+			players[i].renderShip(ctx);
+		}
+		
+		for(var j in players){
+			players[j].renderLabel(ctx);
 		}
 		
 		//Draw debug
