@@ -30,9 +30,6 @@
 					}
 					this.frameTime = FRAMETIME;
 				}
-				
-				
-				
 			}
         },
 

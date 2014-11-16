@@ -33,7 +33,7 @@ function getJoinScreenPosition(playerIndex, screenW, screenH){
 		case 7: return { x: x-GRID, y:y+GRID }
 		case 8: return { x: x+GRID, y:y+GRID }
 		
-		case 9: return { x: x-2*GRID, y:y-1*GRID }
+		case 9:  return { x: x-2*GRID, y:y-1*GRID }
 		case 10: return { x: x+2*GRID, y:y-1*GRID }
 		case 11: return { x: x-2*GRID, y:y-0*GRID }
 		case 12: return { x: x+2*GRID, y:y-0*GRID }

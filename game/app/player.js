@@ -4,6 +4,8 @@
 	const WAITING   = 2;
 	const EXPLODING = 3;
 	
+	const THRUST_VALUE = -5;
+	
     function Player(x,y, label) {
 		this.state = WAITING;
 		this.label = label;
@@ -24,14 +26,26 @@
 		
 		this.radius = 26;
 		
+		this.timeAlive = 0;
+		
 		this.explosion = null;
     };
 
     Player.prototype = {
 		thrust: function(){
-			if(this.alive){	
-				this.velo_y = -7;
+			if(this.state == ALIVE){	
+				this.veloY = THRUST_VALUE;
 			}
+		},
+		
+		move: function(x, y){
+			this.posX = x;
+			this.posY = y;
+		},
+		
+		start: function(){
+			this.state = ALIVE;
+			this.timeAlive = 0;
 		},
 		
 		die: function(){
@@ -41,17 +55,44 @@
 			}
 		},
 		
+		dieTooLow: function(){
+			if(this.state == ALIVE){
+				this.state = EXPLODING;
+				this.posY = WIN_HEIGHT;
+				this.explosion = new Fireball('up');
+			}
+		},
+		
+		dieTooHigh: function(){
+			if(this.state == ALIVE){
+				this.state = EXPLODING;
+				this.posY = 0;
+				this.explosion = new Fireball('down');
+			}
+		},
+		
         update: function(dt) {
 			switch(this.state){
 				case ALIVE:
 					//New velocity based on how long it's been since last update
 					this.veloY = this.veloY + (this.accelY * dt);
 
+					//Rotate based on velocity
+					this.rotation = this.veloY * 0.05;
+					
 					//New position based on velocity
 					this.posY = this.posY + this.veloY;
 
-					//Rotate based on velocity
-					this.rotation = this.veloY * 0.05;
+					//Keep track of how long they're alive
+					this.timeAlive += dt;
+					
+					//Die if off screen!
+					if(this.posY + this.radius < 0){
+						this.dieTooHigh();
+					}
+					if(this.posY > WIN_HEIGHT + this.radius){
+						this.dieTooLow();
+					}
 				break;
 				case EXPLODING:
 					if(this.explosion.isFinished()){

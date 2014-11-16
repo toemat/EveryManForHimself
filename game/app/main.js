@@ -7,6 +7,7 @@ var RESOURCES;
 /* Move inside function after debug */
 var canvas, ctx, lastFrame;
 
+var input;
 var gameState;
 	
 var players = {};
@@ -14,7 +15,7 @@ var playerCount = 0;
 var spaceBg;
 var titleScreen;
 var joinScreen;
-var input;
+var gameLevel;
 /* end move */
 
 (function(){
@@ -36,15 +37,21 @@ var input;
 		titleScreen = new TitleScreen();
 		joinScreen = new JoinScreen();
 		input = new InputHandler();
+		gameLevel = new GameLevel();
 		
 		//Load resources
 		RESOURCES = new GameResources();
 		RESOURCES.loadImages({
 			playerShip: 'img/ship.png',
 			explosion: 'img/explosion_sprite.png',
+			fireball: 'img/fireball_sprite.png',
 			mainTitle: 'img/main_title.png',
 			mainInstructions: 'img/main_instructions.png',
-			joinInstructions: 'img/join_instructions.png'
+			joinInstructions: 'img/join_instructions.png',
+			countdown3: 'img/game_start_3.png',
+			countdown2: 'img/game_start_2.png',
+			countdown1: 'img/game_start_1.png',
+			countdownGo: 'img/game_start_go.png'
 		});
 		
 		lastFrame = Date.now();
@@ -117,9 +124,15 @@ var input;
 				if(input.getReturnPressed()){
 					console.log("Starting game!");
 					gameState = GS_PLAYING;
+					gameLevel.start(players);
 				}
 			break;
 			case GS_PLAYING:
+				spaceBg.update(delta);
+				gameLevel.update(delta, players, keys);
+				
+				spaceBg.render(ctx);
+				gameLevel.render(ctx, players);
 			break;
 		}
 		
