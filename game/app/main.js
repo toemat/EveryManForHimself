@@ -16,6 +16,7 @@ var spaceBg;
 var titleScreen;
 var joinScreen;
 var gameLevel;
+var gameoverScreen;
 /* end move */
 
 (function(){
@@ -24,6 +25,7 @@ var gameLevel;
 	const GS_TITLE		= 1;
 	const GS_JOINGAME	= 2;
 	const GS_PLAYING	= 3;
+	const GS_GAMEOVER	= 4;
 	
 	//Setup game
 	var start = function(){
@@ -31,13 +33,8 @@ var gameLevel;
 		canvas.width = WIN_WIDTH;
 		canvas.height = WIN_HEIGHT;
 		ctx = canvas.getContext('2d');
-		
-		gameState = GS_LOADING;
-		spaceBg = new Space(200, 50);
-		titleScreen = new TitleScreen();
-		joinScreen = new JoinScreen();
-		input = new InputHandler();
-		gameLevel = new GameLevel();
+
+		reset();
 		
 		//Load resources
 		RESOURCES = new GameResources();
@@ -51,11 +48,25 @@ var gameLevel;
 			countdown3: 'img/game_start_3.png',
 			countdown2: 'img/game_start_2.png',
 			countdown1: 'img/game_start_1.png',
-			countdownGo: 'img/game_start_go.png'
+			countdownGo: 'img/game_start_go.png',
+			gameoverTitle: 'img/game_over_title.png',
+			gameoverSub: 'img/game_over_subtitle.png',
+			gameoverInstructions: 'img/game_over_instructions.png'
 		});
 		
 		lastFrame = Date.now();
 		main();
+	}
+	
+	var reset = function(){
+		gameState = GS_LOADING;
+		players = {};
+		playerCount = 0;
+		spaceBg = new Space(200, 50);
+		titleScreen = new TitleScreen();
+		joinScreen = new JoinScreen();
+		input = new InputHandler();
+		gameLevel = new GameLevel();
 	}
 
 	// The main game loop
@@ -122,9 +133,10 @@ var gameLevel;
 				
 				//Press enter to start
 				if(input.getReturnPressed()){
-					console.log("Starting game!");
-					gameState = GS_PLAYING;
-					gameLevel.start(players);
+					if(playerCount > 1){
+						gameState = GS_PLAYING;
+						gameLevel.start(players);
+					}
 				}
 			break;
 			case GS_PLAYING:
@@ -133,6 +145,29 @@ var gameLevel;
 				
 				spaceBg.render(ctx);
 				gameLevel.render(ctx, players);
+
+				if(gameLevel.isGameOver()){
+					gameState = GS_GAMEOVER;
+					
+					var winner;
+					for(var i in players){
+						if(!players[i].isDead()){ winner = players[i] }
+					}
+					gameoverScreen = new GameOverScreen(winner);	//WINNER?
+				}
+			break;
+			case GS_GAMEOVER:
+				spaceBg.update(delta);
+				gameoverScreen.update(delta);
+				
+				spaceBg.render(ctx);
+				gameoverScreen.render(ctx);
+				
+				//Press enter to start
+				if(input.getReturnPressed()){
+					console.log("Restarting game!");
+					reset();
+				}
 			break;
 		}
 		

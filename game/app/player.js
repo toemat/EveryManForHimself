@@ -48,6 +48,24 @@
 			this.timeAlive = 0;
 		},
 		
+		isAlive: function(){
+			return this.state == ALIVE;
+		},
+		
+		isDead: function() {
+			if(this.state == EXPLODING || this.state == DEAD){
+				return true;
+			} else {
+				return false;
+			}
+		},
+			
+		setWaiting: function(){
+			this.state = WAITING;
+			this.veloY = 0;
+			this.rotation = 0;
+		},
+		
 		die: function(){
 			if(this.state == ALIVE || this.state == WAITING){	//TODO: remove waiting - just testing
 				this.state = EXPLODING;
