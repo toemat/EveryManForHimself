@@ -68,7 +68,7 @@
 			//Gereate new obstacle?
 			this.obstacleTimer -= dt;
 			if(this.obstacleTimer < 0){
-				this.obstacles.push(new Obstacle(150, getRandomInt(50, WIN_HEIGHT-150-50)));
+				this.obstacles.push(new Obstacle(200, getRandomInt(50, WIN_HEIGHT-150-50)));
 				this.obstacleTimer = OBSTACLE_INTERVAL;
 			}
 			
