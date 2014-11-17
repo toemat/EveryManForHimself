@@ -1,8 +1,8 @@
 (function() {
 	const RUNNING   = 1;
 	const FINISHED  = 2;
-	const SIZE		= 64;
-	const FRAMES 	= 14;
+	const SIZE		= 160;
+	const FRAMES 	= 12;
 	const FRAMETIME = 60;
 	
     function Explosion() {

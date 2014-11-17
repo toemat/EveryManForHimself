@@ -41,7 +41,7 @@ var gameoverScreen;
 		RESOURCES.loadImages({
 			playerShip: 'img/ship.png',
 			obstacle: 'img/obstacle1.png',
-			explosion: 'img/explosion_sprite.png',
+			explosion: 'img/explosion_sprite2.png',
 			fireball: 'img/fireball_sprite.png',
 			mainTitle: 'img/main_title.png',
 			mainInstructions: 'img/main_instructions.png',
