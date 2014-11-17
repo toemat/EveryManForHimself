@@ -5,7 +5,7 @@ var GAME_SPEED = 0.1;
 var RESOURCES;
 
 /* Move inside function after debug */
-var canvas, ctx, lastFrame;
+var canvas, ctx, lastFrame, actualFrameTime;
 
 var input;
 var gameState;
@@ -40,6 +40,7 @@ var gameoverScreen;
 		RESOURCES = new GameResources();
 		RESOURCES.loadImages({
 			playerShip: 'img/ship.png',
+			obstacle: 'img/obstacle1.png',
 			explosion: 'img/explosion_sprite.png',
 			fireball: 'img/fireball_sprite.png',
 			mainTitle: 'img/main_title.png',
@@ -174,10 +175,12 @@ var gameoverScreen;
 		//Draw debug
 		ctx.fillStyle = "white";
 		ctx.font = "12px monospace";
-		ctx.fillText(delta + "ms" , 5, 15);
+		ctx.fillText(delta + "ms" + actualFrameTime + "ms" , 5, 15);
 
 		// Request to do this again ASAP
 		requestAnimationFrame(main);
+		
+		actualFrameTime = Date.now() - now;
 	};
 
 	//GO!
