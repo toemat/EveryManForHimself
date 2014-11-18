@@ -5,7 +5,10 @@
 	const TIME_PER_COUNTDOWN_STEP = 1000;
 	const TIME_BETWEEN_COUNTDOWN_STEP = 200;
 	
-	const OBSTACLE_INTERVAL = 2500;
+	const OBSTACLE_INTERVAL = 2500; 
+	const BASE_GAP_SIZE = 130;
+	const BONUS_GAP_SIZE_PER_PLAYER = 5;
+    const PENELTY_GAP_SIZE_PER_SECOND = 0.5;
 	
 	const TIME_TO_WAIT_BEFORE_GAMEOVER_SCREEN = 2000;
 	
@@ -27,6 +30,8 @@
 		this.gameover = false;
 		this.waitingToGameover = false;
 		this.countdownToGameover = TIME_TO_WAIT_BEFORE_GAMEOVER_SCREEN;
+		
+		this.numPlayersAlive = 0;
     };
 
     GameLevel.prototype = {
@@ -39,6 +44,7 @@
 			for(var i in players){
 				//Place each player at random on the left side
 				players[i].move(getRandomInt(50, WIN_WIDTH/2), getRandomInt(50, WIN_HEIGHT-50));
+                this.numPlayersAlive++;
 			}
 		},
 		
@@ -68,7 +74,10 @@
 			//Gereate new obstacle?
 			this.obstacleTimer -= dt;
 			if(this.obstacleTimer < 0){
-				this.obstacles.push(new Obstacle(200, getRandomInt(50, WIN_HEIGHT-150-50)));
+				var gapSize = BASE_GAP_SIZE 
+                           + (BONUS_GAP_SIZE_PER_PLAYER * this.numPlayersAlive)
+                           - Math.floor(PENELTY_GAP_SIZE_PER_SECOND * Math.floor(this.totalTime/1000));
+				this.obstacles.push(new Obstacle(gapSize, getRandomInt(50, WIN_HEIGHT-150-50)));
 				this.obstacleTimer = OBSTACLE_INTERVAL;
 			}
 			
@@ -89,15 +98,16 @@
 				players[i].update(dt);	
 			}
 			
-			var playersAlive = 0;
+			//Game over check
+			this.numPlayersAlive = 0;
 			var lastAlive;
 			for(var i in players){
 				if(!players[i].isDead()){
-					playersAlive++;
+					this.numPlayersAlive++;
 					lastAlive = i;
 				}
 			}
-			if(playersAlive == 1){
+			if(this.numPlayersAlive == 1){
 				players[lastAlive].setWaiting();
 				this.waitingToGameover = true;
 			} else {

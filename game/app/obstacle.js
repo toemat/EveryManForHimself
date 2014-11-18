@@ -8,7 +8,7 @@
 		
 		this.color = "lime";
 		
-		this.gapSize = gapSize;
+		this.gapSize = gapSize > 0? gapSize:0;
 		this.gapPos = gapPos;
     };
 	
