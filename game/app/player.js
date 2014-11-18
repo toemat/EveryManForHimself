@@ -6,9 +6,10 @@
 	
 	const THRUST_VALUE = -5;
 	
-    function Player(x,y, label) {
+    function Player(x,y, label, spriteIndex) {
 		this.state = WAITING;
 		this.label = label;
+		this.spriteIndex = spriteIndex;
 		
         this.posX = x;
 		this.posY = y;
@@ -131,7 +132,17 @@
 			
 					ctx.translate(this.posX, this.posY);
 					ctx.rotate(this.rotation);
-					ctx.drawImage(RESOURCES.img.playerShip, -(this.width/2), -(this.height/2));
+					ctx.drawImage(
+						RESOURCES.img.playerShip, 
+						this.spriteIndex * this.width,
+						0,
+						this.width,
+						this.height,
+						-(this.width/2), 
+						-(this.height/2),
+						this.width,
+						this.height
+					);
 
 					ctx.restore();
 				break;

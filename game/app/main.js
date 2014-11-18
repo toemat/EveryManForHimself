@@ -39,9 +39,9 @@ var gameoverScreen;
 		//Load resources
 		RESOURCES = new GameResources();
 		RESOURCES.loadImages({
-			playerShip: 'img/ship.png',
+			playerShip: 'img/ships.png',
 			obstacle: 'img/obstacle1.png',
-			explosion: 'img/explosion_sprite2.png',
+			explosion: 'img/explosion_sprite.png',
 			fireball: 'img/fireball_sprite.png',
 			mainTitle: 'img/main_title.png',
 			mainInstructions: 'img/main_instructions.png',
@@ -101,7 +101,7 @@ var gameoverScreen;
 					for(var i in keys){
 						console.log("ADDING PLAYER: ", keys[i]);	//Todo: remove
 						var pos = getJoinScreenPosition(playerCount, WIN_WIDTH, WIN_HEIGHT);
-						players[keys[i]] = new Player(pos.x, pos.y, keys[i]);
+						players[keys[i]] = new Player(pos.x, pos.y, keys[i], charToIndex(keys[i]));
 						playerCount++;
 					}
 					gameState = GS_JOINGAME;
@@ -126,7 +126,7 @@ var gameoverScreen;
 						if(players[keys[i]] === undefined){
 							console.log("ADDING PLAYER: ", keys[i]);	//Todo: remove
 							var pos = getJoinScreenPosition(playerCount, WIN_WIDTH, WIN_HEIGHT);
-							players[keys[i]] = new Player(pos.x, pos.y, keys[i]);
+							players[keys[i]] = new Player(pos.x, pos.y, keys[i], charToIndex(keys[i]));
 							playerCount++;
 						}
 					}

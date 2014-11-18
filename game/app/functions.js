@@ -9,6 +9,10 @@ function intToChar(int){
 	return String.fromCharCode(int);
 }
 
+function charToIndex(char){
+	return char.charCodeAt(0) - 65;
+}
+
 function getIndexOfValueInArray(ar, val){
 	for (var i = 0; i < ar.length; i++) {
 		if (ar[i] === val) {
