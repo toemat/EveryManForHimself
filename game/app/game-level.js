@@ -6,9 +6,10 @@
 	const TIME_BETWEEN_COUNTDOWN_STEP = 200;
 	
 	const OBSTACLE_INTERVAL = 2500; 
-	const BASE_GAP_SIZE = 130;
-	const BONUS_GAP_SIZE_PER_PLAYER = 5;
-    const PENELTY_GAP_SIZE_PER_SECOND = 0.5;
+	const START_GAP_SIZE = 185;
+	const MIN_GAP_SIZE = 130;
+	const BONUS_GAP_SIZE_PER_PLAYER = 2;
+    const PENELTY_GAP_SIZE_PER_SECOND = 2;
 	
 	const TIME_TO_WAIT_BEFORE_GAMEOVER_SCREEN = 2000;
 	
@@ -32,6 +33,8 @@
 		this.countdownToGameover = TIME_TO_WAIT_BEFORE_GAMEOVER_SCREEN;
 		
 		this.numPlayersAlive = 0;
+		
+		this.lastGapSize = 0;
     };
 
     GameLevel.prototype = {
@@ -74,9 +77,13 @@
 			//Gereate new obstacle?
 			this.obstacleTimer -= dt;
 			if(this.obstacleTimer < 0){
-				var gapSize = BASE_GAP_SIZE 
+				var gapSize = START_GAP_SIZE 
                            + (BONUS_GAP_SIZE_PER_PLAYER * this.numPlayersAlive)
                            - Math.floor(PENELTY_GAP_SIZE_PER_SECOND * Math.floor(this.totalTime/1000));
+				
+				gapSize = gapSize>MIN_GAP_SIZE? gapSize:MIN_GAP_SIZE;
+				this.lastGapSize = gapSize; //TODO: Remove
+					
 				this.obstacles.push(new Obstacle(gapSize, getRandomInt(50, WIN_HEIGHT-150-50)));
 				this.obstacleTimer = OBSTACLE_INTERVAL;
 			}
@@ -128,7 +135,6 @@
 			for(var k=0; k<this.obstacles.length; k++){
 				this.obstacles[k].render(ctx);
 			}
-			
 			
 			//Render players
 			for(var i in players){

@@ -99,7 +99,6 @@ var gameoverScreen;
 				//Join the keypresses on title screen to the game, then move to joingame screen
 				if(keys.length > 0){
 					for(var i in keys){
-						console.log("ADDING PLAYER: ", keys[i]);	//Todo: remove
 						var pos = getJoinScreenPosition(playerCount, WIN_WIDTH, WIN_HEIGHT);
 						players[keys[i]] = new Player(pos.x, pos.y, keys[i], charToIndex(keys[i]));
 						playerCount++;
@@ -124,7 +123,6 @@ var gameoverScreen;
 				if(keys.length > 0){
 					for(var i in keys){
 						if(players[keys[i]] === undefined){
-							console.log("ADDING PLAYER: ", keys[i]);	//Todo: remove
 							var pos = getJoinScreenPosition(playerCount, WIN_WIDTH, WIN_HEIGHT);
 							players[keys[i]] = new Player(pos.x, pos.y, keys[i], charToIndex(keys[i]));
 							playerCount++;
@@ -175,7 +173,7 @@ var gameoverScreen;
 		//Draw debug
 		ctx.fillStyle = "white";
 		ctx.font = "12px monospace";
-		ctx.fillText(delta + "ms" + actualFrameTime + "ms" , 5, 15);
+		ctx.fillText(delta + "ms" + actualFrameTime + "ms / " + gameLevel.lastGapSize, 5, 15);
 
 		// Request to do this again ASAP
 		requestAnimationFrame(main);

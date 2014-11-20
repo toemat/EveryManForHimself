@@ -25,7 +25,7 @@
 		this.width = 64;
 		this.height = 64;
 		
-		this.radius = 26;
+		this.radius = 23;
 		
 		this.timeAlive = 0;
 		
@@ -68,7 +68,7 @@
 		},
 		
 		die: function(){
-			if(this.state == ALIVE || this.state == WAITING){	//TODO: remove waiting - just testing
+			if(this.state == ALIVE){	//TODO: remove waiting - just testing
 				this.state = EXPLODING;
 				this.explosion = new Explosion();
 			}
