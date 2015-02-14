@@ -1,11 +1,24 @@
+/**
+ * Every Man For Himself
+ * 2014 Thomas Renck
+ */
+
 /***** Global Defines *****/
 var WIN_WIDTH = 1280;
 var WIN_HEIGHT = 720;
 var GAME_SPEED = 0.1;
 var RESOURCES;
 
+//Game states
+const GS_LOADING 	= 0;
+const GS_TITLE		= 1;
+const GS_JOINGAME	= 2;
+const GS_PLAYING	= 3;
+const GS_GAMEOVER	= 4;
+
 /* Move inside function after debug */
-var canvas, ctx, lastFrame, actualFrameTime;
+var canvas, ctx, lastFrame;
+var actualFrameTime = 0;
 
 var input;
 var gameState;
@@ -20,13 +33,6 @@ var gameoverScreen;
 /* end move */
 
 (function(){
-	//Game states
-	const GS_LOADING 	= 0;
-	const GS_TITLE		= 1;
-	const GS_JOINGAME	= 2;
-	const GS_PLAYING	= 3;
-	const GS_GAMEOVER	= 4;
-	
 	//Setup game
 	var start = function(){
 		canvas = document.getElementById('canvas');
@@ -55,7 +61,7 @@ var gameoverScreen;
 			gameoverInstructions: 'img/game_over_instructions.png'
 		});
 		
-		lastFrame = Date.now();
+		lastFrame = window.performance.now(); //Date.now();
 		main();
 	}
 	
@@ -72,8 +78,8 @@ var gameoverScreen;
 
 	// The main game loop
 	var main = function(){
-		var now = Date.now();
-		var delta = now - lastFrame;
+		var now = window.performance.now();
+		var delta = Math.round(now - lastFrame);
 		lastFrame = now;
 
 		//Clear screen
@@ -101,6 +107,7 @@ var gameoverScreen;
 					for(var i in keys){
 						var pos = getJoinScreenPosition(playerCount, WIN_WIDTH, WIN_HEIGHT);
 						players[keys[i]] = new Player(pos.x, pos.y, keys[i], charToIndex(keys[i]));
+						players[keys[i]].veloX = 0;
 						playerCount++;
 					}
 					gameState = GS_JOINGAME;
@@ -115,8 +122,8 @@ var gameoverScreen;
 				
 				for(var k in players){
 					players[k].update(delta);
-					players[k].renderShip(ctx);
-					players[k].renderLabel(ctx);
+					players[k].renderShip(ctx, 0);
+					players[k].renderLabel(ctx, 0);
 				}
 				
 				//Join new players to the game
@@ -125,6 +132,7 @@ var gameoverScreen;
 						if(players[keys[i]] === undefined){
 							var pos = getJoinScreenPosition(playerCount, WIN_WIDTH, WIN_HEIGHT);
 							players[keys[i]] = new Player(pos.x, pos.y, keys[i], charToIndex(keys[i]));
+							players[keys[i]].veloX = 0;
 							playerCount++;
 						}
 					}
@@ -164,7 +172,6 @@ var gameoverScreen;
 				
 				//Press enter to start
 				if(input.getReturnPressed()){
-					console.log("Restarting game!");
 					reset();
 				}
 			break;
@@ -173,12 +180,12 @@ var gameoverScreen;
 		//Draw debug
 		ctx.fillStyle = "white";
 		ctx.font = "12px monospace";
-		ctx.fillText(delta + "ms" + actualFrameTime + "ms / " + gameLevel.lastGapSize, 5, 15);
+		ctx.fillText(delta + "ms " + actualFrameTime.toFixed(3) + "ms / " + gameLevel.lastGapSize, 5, 15);
 
 		// Request to do this again ASAP
 		requestAnimationFrame(main);
 		
-		actualFrameTime = Date.now() - now;
+		actualFrameTime = window.performance.now() - now;
 	};
 
 	//GO!

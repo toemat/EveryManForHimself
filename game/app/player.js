@@ -10,26 +10,24 @@
 		this.state = WAITING;
 		this.label = label;
 		this.spriteIndex = spriteIndex;
+		this.timeAlive = 0;
 		
         this.posX = x;
 		this.posY = y;
 		
-		this.veloX = 0;
-		this.accelX = 0;
-		
+		this.veloX = GAME_SPEED;
 		this.veloY = -3;
+		this.accelX = 0;
 		this.accelY = 0.01;
 		
 		this.rotation = 0.0;	//0.80 max?
 		
 		this.width = 64;
 		this.height = 64;
-		
 		this.radius = 23;
 		
-		this.timeAlive = 0;
-		
 		this.explosion = null;
+		this.exhaustPipe = new ExhaustPipe(x, y);
     };
 
     Player.prototype = {
@@ -93,6 +91,9 @@
         update: function(dt) {
 			switch(this.state){
 				case ALIVE:
+					//Right now there's no accel for X, just a constant velocity
+					this.posX += this.veloX * dt;
+					
 					//New velocity based on how long it's been since last update
 					this.veloY = this.veloY + (this.accelY * dt);
 
@@ -113,25 +114,35 @@
 						this.dieTooLow();
 					}
 				break;
+				case WAITING:
+					this.posX += this.veloX * dt;
+				break;
 				case EXPLODING:
 					if(this.explosion.isFinished()){
 						this.state = DEAD;	
 					} else {
-						this.posX -= GAME_SPEED * dt;
+						//this.posX -= GAME_SPEED * dt; No longer doing this in world relitive mode
 						this.explosion.update(dt);
 					}
 				break;
 			}
+			
+			this.exhaustPipe.update(dt, this.posX, this.posY, this.rotation);
         },
 
-        renderShip: function(ctx) {
+        renderShip: function(ctx, worldX) {
+			
+			this.exhaustPipe.render(ctx, worldX);
+			
+			var screenX = this.posX - worldX;
+			
 			switch(this.state){
 				case ALIVE:
 				case WAITING:
 					ctx.save();
-			
-					ctx.translate(this.posX, this.posY);
+					ctx.translate(screenX, this.posY);
 					ctx.rotate(this.rotation);
+
 					ctx.drawImage(
 						RESOURCES.img.playerShip, 
 						this.spriteIndex * this.width,
@@ -143,26 +154,29 @@
 						this.width,
 						this.height
 					);
-
+					
 					ctx.restore();
 				break;
 				case EXPLODING:
 					ctx.save();
-					ctx.translate(this.posX, this.posY);
+					ctx.translate(screenX, this.posY);
 					this.explosion.render(ctx);
 					ctx.restore();
 				break;
 			}
         },
 		
-		renderLabel: function(ctx) {
+		renderLabel: function(ctx, worldX) {
+			
+			var screenX = this.posX - worldX;
+			
 			if(this.state != DEAD){
 				ctx.save();
 
 				ctx.fillStyle = "white";
 				ctx.font = "16px monospace";
 
-				ctx.translate(this.posX, this.posY);
+				ctx.translate(screenX, this.posY);
 				ctx.fillText(this.label, 0, -40);
 
 				ctx.beginPath();

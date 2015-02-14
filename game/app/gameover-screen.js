@@ -10,6 +10,7 @@
 		this.totalTime = 0;
 		this.winner = winner;
 		this.winner.setWaiting();
+		this.winner.veloX = 0;
 		this.winner.move(WIN_WIDTH/2, WINNER_Y);
     };
 
@@ -25,8 +26,8 @@
 			ctx.drawImage(RESOURCES.img.gameoverSub, WIN_WIDTH/2 - TITLE_WIDTH/2, SUBTITLE_Y);
 			ctx.drawImage(RESOURCES.img.gameoverInstructions, WIN_WIDTH/2 - TITLE_WIDTH/2, INSTRUCTIONS_Y);
 			
-			this.winner.renderShip(ctx);
-			this.winner.renderLabel(ctx);
+			this.winner.renderShip(ctx, 0);
+			this.winner.renderLabel(ctx, 0);
         }
     };
 

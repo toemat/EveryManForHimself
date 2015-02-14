@@ -1,8 +1,9 @@
 (function() {
 	const WIDTH = 40;
 	
-    function Obstacle(gapSize, gapPos) {
-        this.posX = WIN_WIDTH + 10;
+    function Obstacle(posX, gapSize, gapPos) {
+        //this.posX = WIN_WIDTH + 10;
+		this.posX = posX;
 		
 		this.width = WIDTH;
 		
@@ -14,13 +15,15 @@
 	
 	Obstacle.prototype = {
 		update: function(dt){
-			this.posX -= dt * GAME_SPEED;
+			//this.posX -= dt * GAME_SPEED;
 		},
 		
-		render: function(ctx){
+		render: function(ctx, worldX){
+			var screenX = this.posX - worldX;
+			
 			ctx.fillStyle = this.color;
-			ctx.fillRect(this.posX+1, 0, WIDTH-1, this.gapPos);
-			ctx.fillRect(this.posX+1, this.gapPos+this.gapSize, WIDTH-1, WIN_HEIGHT);
+			ctx.fillRect(screenX+1, 0, WIDTH-1, this.gapPos);
+			ctx.fillRect(screenX+1, this.gapPos+this.gapSize, WIDTH-1, WIN_HEIGHT);
 			
 			ctx.drawImage(
 				RESOURCES.img.obstacle,
@@ -28,7 +31,7 @@
 				WIN_HEIGHT - this.gapPos,
 				WIDTH,
 				this.gapPos,
-				this.posX,
+				screenX, //this.posX,
 				0,
 				WIDTH,
 				this.gapPos
@@ -40,7 +43,7 @@
 				0,
 				WIDTH,
 				WIN_HEIGHT - this.gapPos - this.gapSize,
-				this.posX,
+				screenX,
 				this.gapPos + this.gapSize,
 				WIDTH,
 				WIN_HEIGHT - this.gapPos - this.gapSize

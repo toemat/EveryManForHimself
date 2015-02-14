@@ -2,7 +2,8 @@
 	const COUNTDOWN_WIDTH = 854;
 	const COUNTDOWN_Y = 200;
 	
-	const TIME_PER_COUNTDOWN_STEP = 1000;
+	//const TIME_PER_COUNTDOWN_STEP = 1000;
+	const TIME_PER_COUNTDOWN_STEP = 10;
 	const TIME_BETWEEN_COUNTDOWN_STEP = 200;
 	
 	const OBSTACLE_INTERVAL = 2500; 
@@ -22,6 +23,8 @@
 	
     function GameLevel() {
 		this.totalTime = 0;
+		this.worldX = 0;
+		
 		this.countdown_state = CDS_DONE;
 		this.countdown_timer = TIME_PER_COUNTDOWN_STEP;
 		
@@ -41,12 +44,15 @@
 		
 		start: function(players){
 			this.totalTime = 0;
+			this.worldX = 0;
+			
 			this.countdown_state = CDS_3;
 			this.countdown_timer = TIME_PER_COUNTDOWN_STEP;
 			
 			for(var i in players){
 				//Place each player at random on the left side
 				players[i].move(getRandomInt(50, WIN_WIDTH/2), getRandomInt(50, WIN_HEIGHT-50));
+				players[i].veloX = GAME_SPEED;
                 this.numPlayersAlive++;
 			}
 		},
@@ -57,6 +63,7 @@
 		
 		update: function(dt, players, keys) {
 			this.totalTime += dt;
+			this.worldX += dt * GAME_SPEED;
 			
 			//3 2 1 GO!
 			if(this.countdown_state != CDS_DONE){
@@ -74,6 +81,8 @@
 				}
 			}
 			
+			//TODO(thomas): Delete old obstacles that arn't on screen any more!!!
+			
 			//Gereate new obstacle?
 			this.obstacleTimer -= dt;
 			if(this.obstacleTimer < 0){
@@ -84,7 +93,7 @@
 				gapSize = gapSize>MIN_GAP_SIZE? gapSize:MIN_GAP_SIZE;
 				this.lastGapSize = gapSize; //TODO: Remove
 					
-				this.obstacles.push(new Obstacle(gapSize, getRandomInt(50, WIN_HEIGHT-150-50)));
+				this.obstacles.push(new Obstacle(this.worldX+WIN_WIDTH+10, gapSize, getRandomInt(50, WIN_HEIGHT-150-50)));
 				this.obstacleTimer = OBSTACLE_INTERVAL;
 			}
 			
@@ -133,15 +142,15 @@
         render: function(ctx, players) {
 			//Render obstacles
 			for(var k=0; k<this.obstacles.length; k++){
-				this.obstacles[k].render(ctx);
+				this.obstacles[k].render(ctx, this.worldX);
 			}
 			
 			//Render players
 			for(var i in players){
-				players[i].renderShip(ctx);	
+				players[i].renderShip(ctx, this.worldX);	
 			}
 			for(var j in players){
-				players[j].renderLabel(ctx);	
+				players[j].renderLabel(ctx, this.worldX);	
 			}
 			
 			//3 2 1 GO!
