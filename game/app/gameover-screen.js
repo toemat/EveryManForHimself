@@ -11,7 +11,7 @@
 		this.winner = winner;
 		this.winner.setWaiting();
 		this.winner.veloX = 0;
-		this.winner.move(WIN_WIDTH/2, WINNER_Y);
+		this.winner.move(RENDER_WIDTH/2, WINNER_Y);
     };
 
     GameOverScreen.prototype = {	
@@ -22,9 +22,9 @@
         },
 
         render: function(ctx) {
-			ctx.drawImage(RESOURCES.img.gameoverTitle, WIN_WIDTH/2 - TITLE_WIDTH/2, TITLE_Y);
-			ctx.drawImage(RESOURCES.img.gameoverSub, WIN_WIDTH/2 - TITLE_WIDTH/2, SUBTITLE_Y);
-			ctx.drawImage(RESOURCES.img.gameoverInstructions, WIN_WIDTH/2 - TITLE_WIDTH/2, INSTRUCTIONS_Y);
+			ctx.drawImage(RESOURCES.img.gameoverTitle, RENDER_WIDTH/2 - TITLE_WIDTH/2, TITLE_Y);
+			ctx.drawImage(RESOURCES.img.gameoverSub, RENDER_WIDTH/2 - TITLE_WIDTH/2, SUBTITLE_Y);
+			ctx.drawImage(RESOURCES.img.gameoverInstructions, RENDER_WIDTH/2 - TITLE_WIDTH/2, INSTRUCTIONS_Y);
 			
 			this.winner.renderShip(ctx, 0);
 			this.winner.renderLabel(ctx, 0);

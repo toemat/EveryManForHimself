@@ -5,7 +5,7 @@
 	const SHIP_SIZE = 64;
 	
     function TitleScreen() {
-		this.podY = WIN_HEIGHT/2 - 32 + 60;
+		this.podY = RENDER_HEIGHT/2 - 32 + 60;
 		this.podOffset = 0;
 		this.totalTime = 0;
     };
@@ -18,8 +18,8 @@
         },
 
         render: function(ctx) {
-			ctx.drawImage(RESOURCES.img.mainTitle, WIN_WIDTH/2 - TITLE_WIDTH/2, TITLE_Y);
-			ctx.drawImage(RESOURCES.img.mainInstructions, WIN_WIDTH/2 - TITLE_WIDTH/2, INSTRUCTIONS_Y);
+			ctx.drawImage(RESOURCES.img.mainTitle, RENDER_WIDTH/2 - TITLE_WIDTH/2, TITLE_Y);
+			ctx.drawImage(RESOURCES.img.mainInstructions, RENDER_WIDTH/2 - TITLE_WIDTH/2, INSTRUCTIONS_Y);
 			
 			ctx.drawImage(
 				RESOURCES.img.playerShip,
@@ -27,7 +27,7 @@
 				0,
 				SHIP_SIZE,
 				SHIP_SIZE,
-				WIN_WIDTH/2 - SHIP_SIZE/2, 
+				RENDER_WIDTH/2 - SHIP_SIZE/2, 
 				Math.floor(this.podY + this.podOffset),
 				SHIP_SIZE,
 				SHIP_SIZE

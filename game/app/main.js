@@ -1,11 +1,17 @@
 /**
  * Every Man For Himself
- * 2014 Thomas Renck
+ * 2014-2015 Thomas Renck 
+ * http://thomasrenck.com
  */
 
 /***** Global Defines *****/
-var WIN_WIDTH = 1280;
-var WIN_HEIGHT = 720;
+var VIEWPORT_WIDTH = 1280;
+var VIEWPORT_HEIGHT = 720;
+
+var OVERDRAW_AMOUNT = 20;
+var RENDER_WIDTH = VIEWPORT_WIDTH + OVERDRAW_AMOUNT*2;
+var RENDER_HEIGHT = VIEWPORT_HEIGHT + OVERDRAW_AMOUNT*2;
+
 var GAME_SPEED = 0.1;
 var RESOURCES;
 
@@ -16,9 +22,15 @@ const GS_JOINGAME	= 2;
 const GS_PLAYING	= 3;
 const GS_GAMEOVER	= 4;
 
-/* Move inside function after debug */
-var canvas, ctx, lastFrame;
+/* Move inside function after debug? */
+var viewport, viewportCtx;
+var drawBuffer, drawBufferCtx;
+var lastFrameStartTime;
 var actualFrameTime = 0;
+
+var viewport;
+var cameraX = OVERDRAW_AMOUNT;
+var cameraY = OVERDRAW_AMOUNT;
 
 var input;
 var gameState;
@@ -34,11 +46,17 @@ var gameoverScreen;
 
 (function(){
 	//Setup game
-	var start = function(){
-		canvas = document.getElementById('canvas');
-		canvas.width = WIN_WIDTH;
-		canvas.height = WIN_HEIGHT;
-		ctx = canvas.getContext('2d');
+	var start = function(){		
+		viewport = new Viewport(
+			document.getElementById('viewport'),
+			VIEWPORT_WIDTH,
+			VIEWPORT_HEIGHT
+		);
+ 
+		drawBuffer = document.createElement('canvas');
+		drawBuffer.width = RENDER_WIDTH;
+		drawBuffer.height = RENDER_HEIGHT;
+		drawBufferCtx = drawBuffer.getContext('2d');
 
 		reset();
 		
@@ -61,7 +79,7 @@ var gameoverScreen;
 			gameoverInstructions: 'img/game_over_instructions.png'
 		});
 		
-		lastFrame = window.performance.now(); //Date.now();
+		lastFrameStartTime = window.performance.now();
 		main();
 	}
 	
@@ -76,15 +94,18 @@ var gameoverScreen;
 		gameLevel = new GameLevel();
 	}
 
-	// The main game loop
+	//Game Loop
 	var main = function(){
 		var now = window.performance.now();
-		var delta = Math.round(now - lastFrame);
-		lastFrame = now;
+		var delta = Math.round(now - lastFrameStartTime);
+		lastFrameStartTime = now;
+		
+		// Request to do this again ASAP
+		requestAnimationFrame(main);
 
 		//Clear screen
-		ctx.fillStyle = "#383952";
-		ctx.fillRect(0, 0, WIN_WIDTH, WIN_HEIGHT);
+		drawBufferCtx.fillStyle = "#383952";
+		drawBufferCtx.fillRect(0, 0, RENDER_WIDTH, RENDER_HEIGHT);
 		
 		//Get input
 		var keys = input.getKeypresses();
@@ -99,13 +120,13 @@ var gameoverScreen;
 				spaceBg.update(delta);
 				titleScreen.update(delta);
 				
-				spaceBg.render(ctx);
-				titleScreen.render(ctx);
+				spaceBg.render(drawBufferCtx);
+				titleScreen.render(drawBufferCtx);
 				
 				//Join the keypresses on title screen to the game, then move to joingame screen
 				if(keys.length > 0){
 					for(var i in keys){
-						var pos = getJoinScreenPosition(playerCount, WIN_WIDTH, WIN_HEIGHT);
+						var pos = getJoinScreenPosition(playerCount, RENDER_WIDTH, RENDER_HEIGHT);
 						players[keys[i]] = new Player(pos.x, pos.y, keys[i], charToIndex(keys[i]));
 						players[keys[i]].veloX = 0;
 						playerCount++;
@@ -117,20 +138,20 @@ var gameoverScreen;
 				spaceBg.update(delta);
 				joinScreen.update(delta);
 				
-				spaceBg.render(ctx);
-				joinScreen.render(ctx);
+				spaceBg.render(drawBufferCtx);
+				joinScreen.render(drawBufferCtx);
 				
 				for(var k in players){
 					players[k].update(delta);
-					players[k].renderShip(ctx, 0);
-					players[k].renderLabel(ctx, 0);
+					players[k].renderShip(drawBufferCtx, 0);
+					players[k].renderLabel(drawBufferCtx, 0);
 				}
 				
 				//Join new players to the game
 				if(keys.length > 0){
 					for(var i in keys){
 						if(players[keys[i]] === undefined){
-							var pos = getJoinScreenPosition(playerCount, WIN_WIDTH, WIN_HEIGHT);
+							var pos = getJoinScreenPosition(playerCount, RENDER_WIDTH, RENDER_HEIGHT);
 							players[keys[i]] = new Player(pos.x, pos.y, keys[i], charToIndex(keys[i]));
 							players[keys[i]].veloX = 0;
 							playerCount++;
@@ -150,8 +171,8 @@ var gameoverScreen;
 				spaceBg.update(delta);
 				gameLevel.update(delta, players, keys);
 				
-				spaceBg.render(ctx);
-				gameLevel.render(ctx, players);
+				spaceBg.render(drawBufferCtx);
+				gameLevel.render(drawBufferCtx, players);
 
 				if(gameLevel.isGameOver()){
 					gameState = GS_GAMEOVER;
@@ -167,8 +188,8 @@ var gameoverScreen;
 				spaceBg.update(delta);
 				gameoverScreen.update(delta);
 				
-				spaceBg.render(ctx);
-				gameoverScreen.render(ctx);
+				spaceBg.render(drawBufferCtx);
+				gameoverScreen.render(drawBufferCtx);
 				
 				//Press enter to start
 				if(input.getReturnPressed()){
@@ -176,15 +197,16 @@ var gameoverScreen;
 				}
 			break;
 		}
+        
+        //Flip the draw buffer to the viewport!
+		viewport.update(delta);
+		viewport.render(drawBuffer);	
 		
 		//Draw debug
-		ctx.fillStyle = "white";
-		ctx.font = "12px monospace";
-		ctx.fillText(delta + "ms " + actualFrameTime.toFixed(3) + "ms / " + gameLevel.lastGapSize, 5, 15);
+		viewport.getCtx().fillStyle = "white";
+		viewport.getCtx().font = "12px monospace";
+		viewport.getCtx().fillText(delta + "ms " + actualFrameTime.toFixed(3) + "ms / " + gameLevel.lastGapSize, 5, 15);
 
-		// Request to do this again ASAP
-		requestAnimationFrame(main);
-		
 		actualFrameTime = window.performance.now() - now;
 	};
 

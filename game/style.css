@@ -2,7 +2,7 @@ body {
 	background-color: #505050;
 }
 
-#canvas {
+#viewport {
 	background: white;
 	margin: 0 auto;
 	display: block;

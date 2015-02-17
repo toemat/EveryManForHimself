@@ -2,8 +2,8 @@
 	const COUNTDOWN_WIDTH = 854;
 	const COUNTDOWN_Y = 200;
 	
-	//const TIME_PER_COUNTDOWN_STEP = 1000;
-	const TIME_PER_COUNTDOWN_STEP = 10;
+	const TIME_PER_COUNTDOWN_STEP = 1000;
+	//const TIME_PER_COUNTDOWN_STEP = 10;
 	const TIME_BETWEEN_COUNTDOWN_STEP = 200;
 	
 	const OBSTACLE_INTERVAL = 2500; 
@@ -51,7 +51,7 @@
 			
 			for(var i in players){
 				//Place each player at random on the left side
-				players[i].move(getRandomInt(50, WIN_WIDTH/2), getRandomInt(50, WIN_HEIGHT-50));
+				players[i].move(getRandomInt(90, VIEWPORT_WIDTH/2), getRandomInt(50, VIEWPORT_HEIGHT-50));
 				players[i].veloX = GAME_SPEED;
                 this.numPlayersAlive++;
 			}
@@ -93,7 +93,11 @@
 				gapSize = gapSize>MIN_GAP_SIZE? gapSize:MIN_GAP_SIZE;
 				this.lastGapSize = gapSize; //TODO: Remove
 					
-				this.obstacles.push(new Obstacle(this.worldX+WIN_WIDTH+10, gapSize, getRandomInt(50, WIN_HEIGHT-150-50)));
+				this.obstacles.push(new Obstacle(
+					this.worldX+RENDER_WIDTH+10, 
+					gapSize, 
+					getRandomInt(50, RENDER_HEIGHT-150-50)
+				));
 				this.obstacleTimer = OBSTACLE_INTERVAL;
 			}
 			
@@ -156,10 +160,10 @@
 			//3 2 1 GO!
 			if(this.countdown_state != CDS_DONE && this.countdown_timer > TIME_BETWEEN_COUNTDOWN_STEP){
 				switch(this.countdown_state){
-					case CDS_3: ctx.drawImage(RESOURCES.img.countdown3, WIN_WIDTH/2 - COUNTDOWN_WIDTH/2, COUNTDOWN_Y); break;
-					case CDS_2: ctx.drawImage(RESOURCES.img.countdown2, WIN_WIDTH/2 - COUNTDOWN_WIDTH/2, COUNTDOWN_Y); break;
-					case CDS_1: ctx.drawImage(RESOURCES.img.countdown1, WIN_WIDTH/2 - COUNTDOWN_WIDTH/2, COUNTDOWN_Y); break;
-					case CDS_GO: ctx.drawImage(RESOURCES.img.countdownGo, WIN_WIDTH/2 - COUNTDOWN_WIDTH/2, COUNTDOWN_Y); break;
+					case CDS_3: ctx.drawImage(RESOURCES.img.countdown3, RENDER_WIDTH/2 - COUNTDOWN_WIDTH/2, COUNTDOWN_Y); break;
+					case CDS_2: ctx.drawImage(RESOURCES.img.countdown2, RENDER_WIDTH/2 - COUNTDOWN_WIDTH/2, COUNTDOWN_Y); break;
+					case CDS_1: ctx.drawImage(RESOURCES.img.countdown1, RENDER_WIDTH/2 - COUNTDOWN_WIDTH/2, COUNTDOWN_Y); break;
+					case CDS_GO: ctx.drawImage(RESOURCES.img.countdownGo, RENDER_WIDTH/2 - COUNTDOWN_WIDTH/2, COUNTDOWN_Y); break;
 				}
 			}
         },

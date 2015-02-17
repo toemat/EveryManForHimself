@@ -13,7 +13,7 @@
         },
 
         render: function(ctx) {
-			ctx.drawImage(RESOURCES.img.joinInstructions, WIN_WIDTH/2 - TITLE_WIDTH/2, INSTRUCTIONS_Y);
+			ctx.drawImage(RESOURCES.img.joinInstructions, RENDER_WIDTH/2 - TITLE_WIDTH/2, INSTRUCTIONS_Y);
         }
     };
 

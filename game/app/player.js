@@ -20,7 +20,7 @@
 		this.accelX = 0;
 		this.accelY = 0.01;
 		
-		this.rotation = 0.0;	//0.80 max?
+		this.rotation = 0.0;
 		
 		this.width = 64;
 		this.height = 64;
@@ -66,17 +66,20 @@
 		},
 		
 		die: function(){
-			if(this.state == ALIVE){	//TODO: remove waiting - just testing
+			if(this.state == ALIVE){
 				this.state = EXPLODING;
 				this.explosion = new Explosion();
+				
+				viewport.shake();	//TODO(thomas): This globalness needs to stop...
 			}
 		},
 		
 		dieTooLow: function(){
 			if(this.state == ALIVE){
 				this.state = EXPLODING;
-				this.posY = WIN_HEIGHT;
+				this.posY = RENDER_HEIGHT;
 				this.explosion = new Fireball('up');
+				viewport.shake();	//TODO(thomas): This globalness needs to stop...
 			}
 		},
 		
@@ -85,6 +88,7 @@
 				this.state = EXPLODING;
 				this.posY = 0;
 				this.explosion = new Fireball('down');
+				viewport.shake();	//TODO(thomas): This globalness needs to stop...
 			}
 		},
 		
@@ -110,7 +114,7 @@
 					if(this.posY + this.radius < 0){
 						this.dieTooHigh();
 					}
-					if(this.posY > WIN_HEIGHT + this.radius){
+					if(this.posY > VIEWPORT_HEIGHT + this.radius){	//TODO(thomas): This will need to be corrected for new duel canvas rendering
 						this.dieTooLow();
 					}
 				break;

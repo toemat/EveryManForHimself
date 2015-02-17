@@ -69,12 +69,13 @@
 			ctx.fillStyle = "white";
 			
 			for(var i=0; i<this.smokies.length; i++){
-				ctx.globalAlpha = this.smokies[i].opacity;
-				ctx.fillRect(this.smokies[i].x-worldX, this.smokies[i].y, 10, 10);	
+				if(this.smokies[i].opacity > 0.001){
+					ctx.globalAlpha = this.smokies[i].opacity;
+					ctx.fillRect(this.smokies[i].x-worldX, this.smokies[i].y, 10, 10);	
+				}
 			}
 			
 			ctx.globalAlpha = 1.0;
-			
 		}		
     };
 

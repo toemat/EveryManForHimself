@@ -13,15 +13,15 @@
         this.stars = [];
 		for(var i=0; i<deepspace_count; i++){
 			this.stars.push(new Star(
-				getRandomInt(0, WIN_WIDTH), 
-				getRandomInt(0, WIN_HEIGHT),
+				getRandomInt(0, RENDER_WIDTH), 
+				getRandomInt(0, RENDER_HEIGHT),
 				0.25
 			));
 		}
 		for(var i=0; i<closer_count; i++){
 			this.stars.push(new Star(
-				getRandomInt(0, WIN_WIDTH), 
-				getRandomInt(0, WIN_HEIGHT),
+				getRandomInt(0, RENDER_WIDTH), 
+				getRandomInt(0, RENDER_HEIGHT),
 				0.5
 			));
 		}
@@ -33,7 +33,7 @@
         	for(var i=0; i<this.stars.length; i++){
 				var x = this.stars[i].pos_x;
 				if(x < -10){
-					x = WIN_WIDTH + 10;
+					x = RENDER_WIDTH + 10;
 				} else {
 					x = x - this.stars[i].speed;
 				}
