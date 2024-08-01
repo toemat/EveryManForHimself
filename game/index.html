@@ -23,5 +23,17 @@
 	<script src="app/game-level.js" type="text/javascript"></script>
 	<script src="app/viewport.js" type="text/javascript"></script>
 	<script src="app/main.js" type="text/javascript"></script>
+    <script>
+        /*---- Click for full screen -------------------------------*/
+        var c = document.getElementById('viewport');
+        c.addEventListener('click', function(){
+            if(typeof c.mozRequestFullScreen === 'function'){
+                c.mozRequestFullScreen();
+            }
+            if(typeof c.webkitRequestFullScreen === 'function'){
+                c.webkitRequestFullScreen();
+            }
+        });
+    </script>
 </body>
 </html>

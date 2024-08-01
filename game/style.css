@@ -7,4 +7,11 @@ body {
 	margin: 0 auto;
 	display: block;
 	margin-top: 100px;
+	image-rendering: pixelated;
+}
+
+#viewport:-webkit-full-screen {
+	width: 100%;
+	height: 100%;
+	margin-top: 0;
 }
